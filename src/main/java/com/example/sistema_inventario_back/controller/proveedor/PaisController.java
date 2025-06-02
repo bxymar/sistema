@@ -22,4 +22,10 @@ public class PaisController {
     public Pais createPaisController(@RequestBody Pais pais){
         return paisService.createPaisService(pais);
     }
+
+    //Controlador para listar a todos los paises
+    @GetMapping("/listar_paises")
+    public Iterable<Pais> getAllPaisesController(){
+        return paisService.getAllPaisesService();
+    }
 }

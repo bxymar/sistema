@@ -15,8 +15,9 @@ public class Ciudad {
     private Integer id_cuidad;
 
     @NonNull
-    private String nombre_cuidad;
+    private String nombre_ciudad;
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "id_pais", nullable = false)
     private Pais pais;
 }

@@ -5,6 +5,8 @@ import com.example.sistema_inventario_back.repository.proveedor.PaisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PaisService {
 
@@ -14,5 +16,10 @@ public class PaisService {
     //Servicio para crear un nuevo País
     public Pais createPaisService(Pais pais){
         return paisRepository.save(pais);
+    }
+
+    //Servicio para listar a todos los Países registrados
+    public Iterable<Pais> getAllPaisesService(){
+        return paisRepository.findAll();
     }
 }
