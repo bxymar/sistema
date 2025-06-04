@@ -17,6 +17,9 @@ public class Ciudad {
     @NonNull
     private String nombre_ciudad;
 
+    @NonNull
+    private Boolean estado_ciudad;
+
     @ManyToOne
     @JoinColumn(name = "id_pais", nullable = false)
     private Pais pais;
