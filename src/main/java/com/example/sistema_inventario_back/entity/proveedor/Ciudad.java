@@ -12,13 +12,13 @@ public class Ciudad {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id_cuidad;
+    private Integer idCiudad;
 
     @NonNull
-    private String nombre_ciudad;
+    private String nombreCiudad;
 
     @NonNull
-    private Boolean estado_ciudad;
+    private Boolean estadoCiudad;
 
     @ManyToOne
     @JoinColumn(name = "id_pais", nullable = false)

@@ -14,9 +14,15 @@ public interface CiudadService {
     //Iterar todas las ciudades
     List<CiudadResponseDTO> getAllCiudades();
 
+    //Iterar las ciudades en estado false
+    List<CiudadResponseDTO> getAllCiudadesEstadoFalse();
+
     //Actualizar el estado de una ciudad
     Ciudad updateEstadoCiudad(Integer id_ciudad, Boolean nuevoEstado);
 
     //Llamar una ciudad mediante id
     CiudadResponseDTO getCiudadById(Integer id_ciudad);
+
+    //Actualizar los datos de una ciudad
+    CiudadResponseDTO updateCiudad(Integer idCiudad, CiudadDTO ciudadDTO);
 }

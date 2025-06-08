@@ -15,10 +15,10 @@ public class Pais {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id_pais;
+    private Integer idPais;
 
     @NonNull
-    private String nombre_pais;
+    private String nombrePais;
 
     @OneToMany(mappedBy = "pais", cascade = CascadeType.ALL)
     @JsonIgnore

@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class CiudadDTO {
-    private String nombre_ciudad;
-    private Boolean estado_ciudad;
-    private Integer id_pais;
+    private String nombreCiudad;
+    private Boolean estadoCiudad;
+    private Integer idPais;
 }

@@ -42,11 +42,21 @@ public class CiudadController {
         return ResponseEntity.ok(ciudadActualizada);
     }
 
-    //Controlador para listar a todas las ciudades
+    //Controlador para listar a todas las ciudades activos
     @GetMapping("/listar_ciudades")
     public ResponseEntity<?> getAllCiudadesController(){
         try{
             List<CiudadResponseDTO> ciudades = ciudadService.getAllCiudades();
+            return ResponseEntity.ok(ciudades);
+        }catch (RuntimeException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/listar_ciudades_inactivos")
+    public ResponseEntity<?> getAllCiudadesEstadoFalseController(){
+        try{
+            List<CiudadResponseDTO> ciudades = ciudadService.getAllCiudadesEstadoFalse();
             return ResponseEntity.ok(ciudades);
         }catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -58,5 +68,12 @@ public class CiudadController {
     public ResponseEntity<CiudadResponseDTO> getCiudadById(@PathVariable Integer id){
         CiudadResponseDTO ciudadResponseDTO = ciudadService.getCiudadById(id);
         return ResponseEntity.ok(ciudadResponseDTO);
+    }
+
+    //Controlador para actualizar la ciudad
+    @PutMapping("/actualizar/{id}")
+    public ResponseEntity<CiudadResponseDTO> updateCiudad(@PathVariable Integer id, @RequestBody CiudadDTO ciudadDTO){
+        CiudadResponseDTO ciudad = ciudadService.updateCiudad(id, ciudadDTO);
+        return ResponseEntity.ok(ciudad);
     }
 }

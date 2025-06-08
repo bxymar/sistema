@@ -24,22 +24,31 @@ public class CiudadServicelmpl implements CiudadService {
     //Servicio para crear una nueva Ciudad
     @Override
     public Ciudad createCiudad(CiudadDTO ciudadDTO){
-        Pais pais = paisRepository.findById(ciudadDTO.getId_pais())
-                .orElseThrow(() -> new RuntimeException("País no encontrado: " +ciudadDTO.getId_pais()));
+        Pais pais = paisRepository.findById(ciudadDTO.getIdPais())
+                .orElseThrow(() -> new RuntimeException("País no encontrado: " +ciudadDTO.getIdPais()));
 
         Ciudad ciudad = new Ciudad();
-        ciudad.setNombre_ciudad(ciudadDTO.getNombre_ciudad());
-        ciudad.setEstado_ciudad(true);
+        ciudad.setNombreCiudad(ciudadDTO.getNombreCiudad());
+        ciudad.setEstadoCiudad(true);
         ciudad.setPais(pais);
 
         return ciudadRepository.save(ciudad);
     }
 
-    //Servicio para listar a todas las ciudades
+    //Servicio para listar a todas las ciudades con estado activo -> true
     @Override
     public List<CiudadResponseDTO> getAllCiudades(){
-        List<Ciudad> ciudades = ciudadRepository.findAll();
+        List<Ciudad> ciudades = ciudadRepository.findByEstadoCiudadTrue();
         return ciudades.stream()
+                .map(this::mapToResponseDTO)
+                .toList();
+    }
+
+    //Servicio para listar a todas la ciudades con estado inactivo -> false
+    @Override
+    public List<CiudadResponseDTO> getAllCiudadesEstadoFalse(){
+        List<Ciudad> ciudadesInactivas = ciudadRepository.findByEstadoCiudadFalse();
+        return ciudadesInactivas.stream()
                 .map(this::mapToResponseDTO)
                 .toList();
     }
@@ -51,37 +60,60 @@ public class CiudadServicelmpl implements CiudadService {
                 .orElseThrow(() -> new RuntimeException("Ciudad no encontrada con ID: " +id_ciudad));
 
         //Validar que el estado actual sea true antes de cambiar a false
-        if(!ciudad.getEstado_ciudad()){
+        if(!ciudad.getEstadoCiudad()){
             throw new RuntimeException("La ciudad ya se encuentra inactiva");
         }
 
         //Solo permitir cambiar a false
         if (nuevoEstado.equals(Boolean.FALSE)){
-            ciudad.setEstado_ciudad(false);
+            ciudad.setEstadoCiudad(false);
             return ciudadRepository.save(ciudad);
         } else{
             throw new RuntimeException("Solo se permite desactivar ciudades activas.");
         }
     }
 
+    //Servicio para buscar la ciudad por el id
     @Override
-    public CiudadResponseDTO getCiudadById(Integer id_ciudad){
-        Ciudad ciudad = ciudadRepository.findById(id_ciudad)
-                .orElseThrow(() -> new RuntimeException("Ciudad no encontrada con ID: " +id_ciudad));
+    public CiudadResponseDTO getCiudadById(Integer idCiudad){
+        Ciudad ciudad = ciudadRepository.findById(idCiudad)
+                .orElseThrow(() -> new RuntimeException("Ciudad no encontrada con ID: " +idCiudad));
 
         return mapToResponseDTO(ciudad);
+    }
+
+    //Servicio para actualizar la ciudad
+    @Override
+    public CiudadResponseDTO updateCiudad(Integer idCiudad, CiudadDTO ciudadDTO){
+
+        Ciudad ciudad = ciudadRepository.findById(idCiudad)
+                .orElseThrow(() -> new RuntimeException("Ciudad no encontrada con ID: " +idCiudad));
+
+        if (ciudadDTO.getNombreCiudad() != null && !ciudadDTO.getNombreCiudad().equals(ciudad.getNombreCiudad())){
+            ciudad.setNombreCiudad(ciudadDTO.getNombreCiudad());
+        }
+
+        if(ciudadDTO.getIdPais() != null && !ciudadDTO.getIdPais().equals(ciudad.getPais().getIdPais())){
+            Pais pais = paisRepository.findById(ciudadDTO.getIdPais())
+                    .orElseThrow(() -> new RuntimeException("Pais no encontrado con ID: " +ciudadDTO.getIdPais()));
+
+            ciudad.setPais(pais);
+        }
+
+        Ciudad ciudadActualizada = ciudadRepository.save(ciudad);
+        return mapToResponseDTO(ciudadActualizada);
     }
 
     //Metodo para modificar el mapeo Ciudad -> CiudadResponseDTO
     private CiudadResponseDTO mapToResponseDTO(Ciudad ciudad){
         CiudadResponseDTO ciudadResponseDTO = new CiudadResponseDTO();
-        ciudadResponseDTO.setId_ciudad(ciudad.getId_cuidad());
-        ciudadResponseDTO.setNombre_ciudad(ciudad.getNombre_ciudad());
-        ciudadResponseDTO.setEstado_ciudad(ciudad.getEstado_ciudad());
+        ciudadResponseDTO.setIdCiudad(ciudad.getIdCiudad());
+        ciudadResponseDTO.setNombreCiudad(ciudad.getNombreCiudad());
+        ciudadResponseDTO.setEstadoCiudad(ciudad.getEstadoCiudad());
 
         if (ciudad.getPais() != null){
-            ciudadResponseDTO.setId_pais(ciudad.getPais().getId_pais());
-            ciudadResponseDTO.setNombre_pais(ciudad.getPais().getNombre_pais());
+            ciudadResponseDTO.setIdPais(ciudad.getPais().getIdPais());
+            ciudadResponseDTO.setNombrePais(ciudad.getPais().getNombrePais());
         }
 
         return ciudadResponseDTO;
