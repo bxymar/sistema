@@ -12,10 +12,7 @@ public interface CiudadService {
     Ciudad createCiudad(CiudadDTO ciudadDTO);
 
     //Iterar todas las ciudades
-    List<CiudadResponseDTO> getAllCiudades();
-
-    //Iterar las ciudades en estado false
-    List<CiudadResponseDTO> getAllCiudadesEstadoFalse();
+    List<CiudadResponseDTO> getAllCiudadesPorEstado(Boolean estadoCiudad);
 
     //Actualizar el estado de una ciudad
     Ciudad updateEstadoCiudad(Integer id_ciudad, Boolean nuevoEstado);

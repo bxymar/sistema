@@ -8,6 +8,7 @@ import com.example.sistema_inventario_back.repository.proveedor.CiudadRepository
 import com.example.sistema_inventario_back.repository.proveedor.PaisRepository;
 import com.example.sistema_inventario_back.service.proveedor.proveedor_interface.CiudadService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,19 +37,16 @@ public class CiudadServicelmpl implements CiudadService {
     }
 
     //Servicio para listar a todas las ciudades con estado activo -> true
-    @Override
-    public List<CiudadResponseDTO> getAllCiudades(){
-        List<Ciudad> ciudades = ciudadRepository.findByEstadoCiudadTrue();
-        return ciudades.stream()
-                .map(this::mapToResponseDTO)
-                .toList();
-    }
+    public List<CiudadResponseDTO> getAllCiudadesPorEstado(Boolean estadoCiudad){
+        List<Ciudad> ciudades;
 
-    //Servicio para listar a todas la ciudades con estado inactivo -> false
-    @Override
-    public List<CiudadResponseDTO> getAllCiudadesEstadoFalse(){
-        List<Ciudad> ciudadesInactivas = ciudadRepository.findByEstadoCiudadFalse();
-        return ciudadesInactivas.stream()
+        if (estadoCiudad == null){
+            ciudades = ciudadRepository.findAll();
+        }else{
+            ciudades = ciudadRepository.findByEstadoCiudad(estadoCiudad);
+        }
+
+        return ciudades.stream()
                 .map(this::mapToResponseDTO)
                 .toList();
     }
@@ -59,18 +57,13 @@ public class CiudadServicelmpl implements CiudadService {
         Ciudad ciudad = ciudadRepository.findById(id_ciudad)
                 .orElseThrow(() -> new RuntimeException("Ciudad no encontrada con ID: " +id_ciudad));
 
-        //Validar que el estado actual sea true antes de cambiar a false
-        if(!ciudad.getEstadoCiudad()){
-            throw new RuntimeException("La ciudad ya se encuentra inactiva");
+        //Verificar si realmente hay un cambio
+        if(ciudad.getEstadoCiudad().equals(nuevoEstado)){
+            throw new RuntimeException("La ciudad ya se encuentra en el estado solicitado");
         }
 
-        //Solo permitir cambiar a false
-        if (nuevoEstado.equals(Boolean.FALSE)){
-            ciudad.setEstadoCiudad(false);
-            return ciudadRepository.save(ciudad);
-        } else{
-            throw new RuntimeException("Solo se permite desactivar ciudades activas.");
-        }
+        ciudad.setEstadoCiudad(nuevoEstado);
+        return ciudadRepository.save(ciudad);
     }
 
     //Servicio para buscar la ciudad por el id

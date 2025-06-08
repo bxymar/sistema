@@ -6,7 +6,5 @@ import java.util.List;
 
 public interface CiudadRepository extends JpaRepository<Ciudad, Integer> {
 
-    List<Ciudad> findByEstadoCiudadTrue(); //Solo ciudades activas
-
-    List<Ciudad> findByEstadoCiudadFalse(); //Solo ciudades inactivas
+    List<Ciudad> findByEstadoCiudad(Boolean estadoCiudad);
 }

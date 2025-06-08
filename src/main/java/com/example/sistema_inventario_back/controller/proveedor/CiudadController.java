@@ -36,27 +36,18 @@ public class CiudadController {
     //Controlador para actualizar el estado de la ciudad
     @PutMapping("/actualizar/{id}/estado")
     public ResponseEntity<Ciudad> updateEstadoCiudad(
-            @PathVariable Integer id
+            @PathVariable Integer id,
+            @RequestParam Boolean nuevoEstado
     ){
-        Ciudad ciudadActualizada = ciudadService.updateEstadoCiudad(id, false);
+        Ciudad ciudadActualizada = ciudadService.updateEstadoCiudad(id, nuevoEstado);
         return ResponseEntity.ok(ciudadActualizada);
     }
 
     //Controlador para listar a todas las ciudades activos
     @GetMapping("/listar_ciudades")
-    public ResponseEntity<?> getAllCiudadesController(){
+    public ResponseEntity<?> getAllCiudadesController(@RequestParam(required = false) Boolean estadoCiudad){
         try{
-            List<CiudadResponseDTO> ciudades = ciudadService.getAllCiudades();
-            return ResponseEntity.ok(ciudades);
-        }catch (RuntimeException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-    }
-
-    @GetMapping("/listar_ciudades_inactivos")
-    public ResponseEntity<?> getAllCiudadesEstadoFalseController(){
-        try{
-            List<CiudadResponseDTO> ciudades = ciudadService.getAllCiudadesEstadoFalse();
+            List<CiudadResponseDTO> ciudades = ciudadService.getAllCiudadesPorEstado(estadoCiudad);
             return ResponseEntity.ok(ciudades);
         }catch (RuntimeException e){
             return ResponseEntity.badRequest().body(e.getMessage());
